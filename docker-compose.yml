@@ -1,0 +1,24 @@
+version: "3.2"
+services:
+  air-quality-ui:
+    build: ./UI/
+    ports:
+      - 8081:80
+    depends_on:
+      - air-quality-db
+    links:
+      - air-quality-db
+
+  air-quality-parser:
+    build: ./parser/
+    depends_on:
+      - air-quality-db
+    links:
+      - air-quality-db
+  
+  air-quality-db:
+    build: ./database/
+    environment:
+      - MYSQL_ROOT_PASSWORD=d04kdzepq33kadf3qp314rm3o
+#    ports:
+#      - 3306:3306
