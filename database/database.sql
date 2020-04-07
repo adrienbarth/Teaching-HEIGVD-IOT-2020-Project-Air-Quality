@@ -28,12 +28,12 @@ CREATE TABLE sensors
 	PRIMARY KEY (id)
 );
 
-CREATE TABLE sensors_data
+CREATE TABLE values
 (
     id				int auto_increment primary key,
-	time			datetime not null,
-    value			float not null,
+	date			datetime not null,
+    payload			float not null,
     fk_sensor_id 	int not null,
-    constraint sensors_data_sensors_id_fk
+    constraint values_sensors_id_fk
         foreign key (fk_sensor_id) references sensors (id)
 );
