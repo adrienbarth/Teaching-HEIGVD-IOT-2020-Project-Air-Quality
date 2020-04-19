@@ -27,7 +27,7 @@ CREATE TABLE sensors
         foreign key (fk_device_EUI) references devices (EUI)
 );
 
-CREATE TABLE values
+CREATE TABLE `values`
 (
     id				int auto_increment primary key,
 	date			datetime not null,

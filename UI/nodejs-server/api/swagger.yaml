@@ -1,0 +1,172 @@
+---
+swagger: "2.0"
+info:
+  description: "API for IOT project"
+  version: "1.0.0"
+  title: "Teaching-HEIGVD-IOT-2020-Project-Air-Quality"
+  contact:
+    email: "adrien.barth@heig-vd.ch"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "localhost"
+basePath: "/v2"
+tags:
+- name: "device"
+  description: "Polling devices"
+- name: "sensor"
+  description: "Access to the device's sensors"
+- name: "value"
+  description: "Operations about user"
+schemes:
+- "http"
+paths:
+  /device:
+    get:
+      tags:
+      - "device"
+      summary: "List of all devices"
+      operationId: "findDevices"
+      produces:
+      - "application/json"
+      parameters: []
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Device"
+      x-swagger-router-controller: "Device"
+  /sensor/{deviceEUI}:
+    get:
+      tags:
+      - "sensor"
+      summary: "Find sensors by device's EUI"
+      operationId: "findSensorsByDeviceEUI"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "deviceEUI"
+        in: "path"
+        description: "EUI of device"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Sensor"
+        "404":
+          description: "Device not found"
+      x-swagger-router-controller: "Sensor"
+  /value/{sensorID}:
+    get:
+      tags:
+      - "value"
+      summary: "Find sensor's values"
+      operationId: "findValuesBySensorID"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "sensorID"
+        in: "path"
+        description: "ID of sensor"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+          schema:
+            type: "array"
+            items:
+              $ref: "#/definitions/Value"
+        "404":
+          description: "Sensor not found"
+      x-swagger-router-controller: "Value"
+  /value/{sensorID}/latest:
+    get:
+      tags:
+      - "value"
+      summary: "Find sensor's latest value"
+      operationId: "findLastValueBySensorID"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "sensorID"
+        in: "path"
+        description: "ID of sensor"
+        required: true
+        type: "integer"
+      responses:
+        "200":
+          description: "successful operation"
+          schema: {}
+        "404":
+          description: "Sensor not found"
+      x-swagger-router-controller: "Value"
+definitions:
+  Device:
+    type: "object"
+    properties:
+      EUI:
+        type: "string"
+      name:
+        type: "string"
+      location:
+        type: "string"
+    xml:
+      name: "Device"
+    example:
+      EUI: "EUI"
+      name: "name"
+      location: "location"
+  Sensor:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      name:
+        type: "string"
+      device:
+        $ref: "#/definitions/Device"
+    xml:
+      name: "Sensor"
+    example:
+      name: "name"
+      id: 0
+      device:
+        EUI: "EUI"
+        name: "name"
+        location: "location"
+  Value:
+    type: "object"
+    properties:
+      id:
+        type: "integer"
+        format: "int64"
+      date:
+        type: "string"
+      payload:
+        type: "number"
+      sensor:
+        $ref: "#/definitions/Sensor"
+    xml:
+      name: "User"
+    example:
+      date: "date"
+      payload: 6.02745618307040320615897144307382404804229736328125
+      sensor:
+        name: "name"
+        id: 0
+        device:
+          EUI: "EUI"
+          name: "name"
+          location: "location"
+      id: 0
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
