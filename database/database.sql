@@ -24,8 +24,7 @@ CREATE TABLE sensors
     name			varchar(100) not null,
     fk_device_EUI 	varchar(100) not null,
     constraint sensors_devices_EUI_fk
-        foreign key (fk_device_EUI) references devices (EUI),
-	PRIMARY KEY (id)
+        foreign key (fk_device_EUI) references devices (EUI)
 );
 
 CREATE TABLE values
