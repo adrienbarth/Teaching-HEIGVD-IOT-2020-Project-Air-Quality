@@ -9,12 +9,6 @@ access_key = "ttn-account-v2.yxmXtnn1KRl6VrkLoHSEF0_6kBsjBBLsP8QopR-q6Vo"
 
 handler = ttn.HandlerClient(app_id, access_key)
 
-def uplink_callback(msg, client):
-	print("Received uplink from ", msg.dev_id)
-	value = str(base64.b64decode(msg.payload_raw).hex())
-	print(value)
-	writeToDB(msg, value)
-
 def writeToDB(msg, value):
 	
 	date, hour = msg.metadata.time.split('T')
@@ -71,6 +65,11 @@ def writeToDB(msg, value):
 			connection.close()
 			print("MySQL connection is closed")
 
+def uplink_callback(msg, client):
+	print("Received uplink from ", msg.dev_id)
+	value = str(base64.b64decode(msg.payload_raw).hex())
+	print(value)
+	writeToDB(msg, value)
 
 # using mqtt client
 mqtt_client = handler.data()
