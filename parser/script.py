@@ -23,7 +23,7 @@ def writeToDB(msg, value):
 	sqlDate = date + " " + str(hour)
 	
 
-	statement = "insert into iot2020.sensorValues(date, payload, unite, fk_sensor_id) values (" + sqlDate +", "
+	statement = "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", "
 	
 	if msg.dev_id == "environment-2":
 		temp, pressure, humidity, uv = value.split('00')
@@ -34,9 +34,9 @@ def writeToDB(msg, value):
 		uv = int(uv,16)			#ohms id 8
 
 		statement += str(temp) + ", " + "celsius, 6);\n"
-		statement += "insert into iot2020.sensorValues(date, payload, unite, fk_sensor_id) values (" + str(sqlDate) +", " + str(pressure) + ", " + "hPA, 5);\n"
-		statement += "insert into iot2020.sensorValues(date, payload, unite, fk_sensor_id) values (" + str(sqlDate) +", " + str(humidity) + ", " + "rh, 7);\n"
-		statement += "insert into iot2020.sensorValues(date, payload, unite, fk_sensor_id) values (" + str(sqlDate) +", " + str(uv) + ", " + "ohms, 8);\n"
+		statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(pressure) + ", " + "hPA, 5);\n"
+		statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(humidity) + ", " + "rh, 7);\n"
+		statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(uv) + ", " + "ohms, 8);\n"
 
 
 	elif msg.dev_id == "airquality":
@@ -44,13 +44,13 @@ def writeToDB(msg, value):
 		coo = value[2:]			#ppm id 9
 
 		statement += tvoc + ", " + "ppb, 10);\n"
-		statement += "insert into iot2020.sensorValues(date, payload, unite, fk_sensor_id) values (" + str(sqlDate) +", " + str(coo) + ", " + "ppm, 9);\n"
+		statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(coo) + ", " + "ppm, 9);\n"
 
 	print(statement)
 	
 
 	try:
-		connection = mysql.connector.connect(host='localhost',
+		connection = mysql.connector.connect(host='127.0.0.1',
 										 database='iot2020',
 										 user='root',
 										 password='d04kdzepq33kadf3qp314rm3o')
@@ -65,9 +65,9 @@ def writeToDB(msg, value):
 		print(cursor.rowcount, "record inserted successfully into table")
 		record = cursor.fetchone()
 
-	
+
 	except Error as e:
-	    print("Error while connecting to MySQL", e)
+		print("Error while connecting to MySQL", e)
 	finally:
 		if (connection.is_connected()):
 			cursor.close()
@@ -78,10 +78,10 @@ def writeToDB(msg, value):
 # using mqtt client
 mqtt_client = handler.data()
 mqtt_client.set_uplink_callback(uplink_callback)
-mqtt_client.connect()
-time.sleep(60)
+while True:
+	mqtt_client.connect()
+
+	time.sleep(60)
+
 mqtt_client.close()
-
-
-# connect to DB
 
