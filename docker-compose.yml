@@ -3,7 +3,7 @@ services:
   air-quality-ui:
     build: ./UI/
     ports:
-      - 80:80
+      - 443:80
     depends_on:
       - air-quality-db
     links:
@@ -20,8 +20,3 @@ services:
     build: ./database/
     environment:
       - MYSQL_ROOT_PASSWORD=d04kdzepq33kadf3qp314rm3o
-      - MYSQL_INITDB_SKIP_TZINFO=1
-    ports:
-      - 3306:3306
-#    volumes:
-#    - ./storage/db:/var/lib/mysql:rw
