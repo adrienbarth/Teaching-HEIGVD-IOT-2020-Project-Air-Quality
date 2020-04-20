@@ -11,31 +11,68 @@ handler = ttn.HandlerClient(app_id, access_key)
 
 def uplink_callback(msg, client):
   print("Received uplink from ", msg.dev_id)
-  print(msg)
-  print(str(base64.b64decode(msg.payload_raw).decode("utf-8")))
+  value = str(base64.b64decode(msg.payload_raw).hex())
+  print(value)
 
-  writeToDB(msg)
+  writeToDB(msg, value)
 
-def writeToDB(msg):
- 	connection = mysql.connector.connect(host='localhost',
-                                         database='mydb',
-                                         user='user',
-                                         password='password')
-    if connection.is_connected():
-        db_Info = connection.get_server_info()
-        print("Connected to MySQL Server version ", db_Info)
-        cursor = connection.cursor()
-        cursor.execute("select *")
-        record = cursor.fetchone()
-        print("You're connected to database: ", record)
+def writeToDB(msg, value):
+	
+	date, hour = msg.metadata.time.split('T')
+	hour = hour.split('.')[0]
+	sqlDate = date + " " + str(hour)
+	
 
+	statement = "insert into iot2020.sensorValues(date, payload, unite, fk_sensor_id) values (" + sqlDate +", "
+	
+	if msg.dev_id == "environment-2":
+		temp, pressure, humidity, uv = value.split('00')
+		
+		temp = int(temp,16)			#°C id 6
+		pressure = int(pressure,16) #hPA id 5
+		humidity = int(humidity,16) #%rh id 7
+		uv = int(uv,16)			#ohms id 8
+
+		statement += str(temp) + ", " + "celsius, 6);\n"
+		statement += "insert into iot2020.sensorValues(date, payload, unite, fk_sensor_id) values (" + str(sqlDate) +", " + str(pressure) + ", " + "hPA, 5);\n"
+		statement += "insert into iot2020.sensorValues(date, payload, unite, fk_sensor_id) values (" + str(sqlDate) +", " + str(humidity) + ", " + "rh, 7);\n"
+		statement += "insert into iot2020.sensorValues(date, payload, unite, fk_sensor_id) values (" + str(sqlDate) +", " + str(uv) + ", " + "ohms, 8);\n"
+
+
+	elif msg.dev_id == "airquality":
+		tvoc = value[:2]		#ppb id 10
+		coo = value[2:]			#ppm id 9
+
+		statement += tvoc + ", " + "ppb, 10);\n"
+		statement += "insert into iot2020.sensorValues(date, payload, unite, fk_sensor_id) values (" + str(sqlDate) +", " + str(coo) + ", " + "ppm, 9);\n"
+
+	print(statement)
+	
+
+	try:
+		connection = mysql.connector.connect(host='localhost',
+										 database='iot2020',
+										 user='root',
+										 password='d04kdzepq33kadf3qp314rm3o')
+
+
+		connection.is_connected()
+		db_Info = connection.get_server_info()
+		print("Connected to MySQL Server version ", db_Info)
+		cursor = connection.cursor()
+		cursor.execute(statement)
+		connection.commit()
+		print(cursor.rowcount, "record inserted successfully into table")
+		record = cursor.fetchone()
+
+	
 	except Error as e:
-    print("Error while connecting to MySQL", e)
+	print("Error while connecting to MySQL", e)
 	finally:
-	    if (connection.is_connected()):
-	        cursor.close()
-	        connection.close()
-	        print("MySQL connection is closed")
+		if (connection.is_connected()):
+			cursor.close()
+			connection.close()
+			print("MySQL connection is closed")
 
 
 # using mqtt client
