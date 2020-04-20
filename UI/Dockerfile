@@ -1,18 +1,7 @@
-FROM node:10
+FROM php:7.2-apache
 
-# Create app directory
-WORKDIR /usr/src/app
+COPY ./app /UI
+COPY ./vhost.conf /etc/apache2/sites-available/000-default.conf
 
-# Install app dependencies
-# A wildcard is used to ensure both package.json AND package-lock.json are copied
-# where available (npm@5+)
-COPY package*.json ./
-
-RUN npm install
-
-
-# Bundle app source
-COPY ./nodejs-server .
-
-EXPOSE 8080
-CMD [ "node", "server.js" ]
+RUN a2enmod rewrite
+RUN docker-php-ext-install pdo_mysql
