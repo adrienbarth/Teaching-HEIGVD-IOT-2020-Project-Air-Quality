@@ -9,12 +9,12 @@ services:
     links:
       - air-quality-db
 
-#  air-quality-parser:
-#    build: ./parser/
-#    depends_on:
-#      - air-quality-db
-#    links:
-#      - air-quality-db
+  air-quality-parser:
+    build: ./parser/
+    depends_on:
+      - air-quality-db
+    links:
+      - air-quality-db
   
   air-quality-db:
     build: ./database/
