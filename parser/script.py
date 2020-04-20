@@ -50,7 +50,7 @@ def writeToDB(msg, value):
 	
 
 	try:
-		connection = mysql.connector.connect(host='127.0.0.1',
+		connection = mysql.connector.connect(host='air-quality-db',
 										 database='iot2020',
 										 user='root',
 										 password='d04kdzepq33kadf3qp314rm3o')
