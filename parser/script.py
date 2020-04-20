@@ -10,11 +10,11 @@ access_key = "ttn-account-v2.yxmXtnn1KRl6VrkLoHSEF0_6kBsjBBLsP8QopR-q6Vo"
 handler = ttn.HandlerClient(app_id, access_key)
 
 def writeToDB(msg, value):
-	
 	date, hour = msg.metadata.time.split('T')
 	hour = hour.split('.')[0]
 	sqlDate = date + " " + str(hour)
-	
+	statement = ''
+
 	if msg.dev_id == "environment-2":
 		temp, pressure, humidity, uv = value.split('00')
 		
@@ -28,7 +28,6 @@ def writeToDB(msg, value):
 		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(humidity) + ', "rh", 7);\n'
 		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(uv) + ', "ohms", 8);\n'
 
-
 	elif msg.dev_id == "airquality":
 		tvoc = value[:2]		#ppb id 10
 		coo = value[2:]			#ppm id 9
@@ -36,15 +35,14 @@ def writeToDB(msg, value):
 		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(tvoc) + ', "ppb", 10);\n'
 		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(coo) + ', "ppm", 9);\n'
 
-
 	print(statement)
 	
-
 	try:
-		connection = mysql.connector.connect(host='air-quality-db',
-										 database='iot2020',
-										 user='root',
-										 password='d04kdzepq33kadf3qp314rm3o')
+		connection = mysql.connector.connect(
+			host='air-quality-db',
+			database='iot2020',
+			user='root',
+			password='d04kdzepq33kadf3qp314rm3o')
 
 
 		connection.is_connected()

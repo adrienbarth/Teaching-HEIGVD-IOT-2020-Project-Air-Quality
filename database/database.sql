@@ -31,7 +31,7 @@ CREATE TABLE sensorValues
 (
     id				int auto_increment primary key,
 	date			datetime not null,
-    payload			float not null,
+    payload			varchar(20) not null,
     unite			varchar(20) not null,
     fk_sensor_id 	int not null,
     constraint messages_sensors_id_fk
