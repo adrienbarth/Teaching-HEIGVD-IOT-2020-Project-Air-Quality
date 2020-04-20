@@ -49,7 +49,7 @@ def writeToDB(msg, value):
 		db_Info = connection.get_server_info()
 		print("Connected to MySQL Server version ", db_Info)
 		cursor = connection.cursor()
-		cursor.execute(statement)
+		cursor.execute(statement, multi=True)
 		connection.commit()
 		print(cursor.rowcount, "record inserted successfully into table")
 		record = cursor.fetchone()
