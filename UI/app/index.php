@@ -8,6 +8,7 @@ $SensorDAO = new Sensor();
 $SensorValueDAO = new SensorValue();
 
 $devices = $DeviceDAO->getDevices();
+$sensorValues = $SensorValueDAO->getAllSensorValues();
 
 ?>
 
@@ -48,20 +49,32 @@ $devices = $DeviceDAO->getDevices();
     <!-- Begin page content -->
     <main role="main" class="container">
         <div class="container" role="main">
-    <?php
-        foreach ($devices as $device) {
-            $sensors = $SensorDAO->getSensors($device->EUI);
-
-            foreach ($sensors as $sensor) {
-                $sensorValues = $SensorValueDAO->getSensorValues($sensor->id);
-
-                foreach ($sensorValues as $sensorValue) {
-                    echo $device->EUI.' '.$device->name.' '.$device->location.' '.$sensor->name.' '.$sensorValue->date.' '.$sensorValue->payload.'<br/>';
-                }
-            }
-        }
-    ?>
-            </div>
+            <h1 class="mt-5">Last values</h1>
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                    <th scope="col">EUI</th>
+                    <th scope="col">Location</th>
+                    <th scope="col">Sensor</th>
+                    <th scope="col">Date</th>
+                    <th scope="col">Value</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                        foreach ($sensorValues as $sensorValue) {
+                            echo '<tr>';
+                            echo '<td>'.$sensorValue->EUI.'</td>';
+                            echo '<td>'.$sensorValue->location.'</td>';
+                            echo '<td>'.$sensorValue->name.'</td>';
+                            echo '<td>'.$sensorValue->date.'</td>';
+                            echo '<td>'.$sensorValue->payload.'</td>';
+                            echo '</tr>';
+                        }
+                    ?>
+                </tbody>
+            </table>
+        </div>
     </main>
 </body>
 </html>
