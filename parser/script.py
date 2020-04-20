@@ -13,9 +13,8 @@ def writeToDB(msg, value):
 	date, hour = msg.metadata.time.split('T')
 	hour = hour.split('.')[0]
 	sqlDate = date + " " + str(hour)
-	statement = ''
 
-	if msg.dev_id == "environment-2":
+	if msg.dev_id == "airquality":
 		temp, pressure, humidity, uv = value.split('00')
 		
 		temp = int(temp,16)			#°C id 6
@@ -23,19 +22,19 @@ def writeToDB(msg, value):
 		humidity = int(humidity,16) #%rh id 7
 		uv = int(uv,16)			#ohms id 8
 
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(pressure) + ', "hPA", 5);\n'
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(temp) + ', "Celsius", 6);\n'
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(humidity) + ', "rh", 7);\n'
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(uv) + ', "ohms", 8);\n'
+		statements = 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(pressure) + '", "hPA", 5);'
+		statements += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(temp) + '", "Celsius", 6);'
+		statements += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(humidity) + '", "rh", 7);'
+		statements += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(uv) + '", "ohms", 8);'
 
-	elif msg.dev_id == "airquality":
+	elif msg.dev_id == "environment-2":
 		tvoc = value[:2]		#ppb id 10
 		coo = value[2:]			#ppm id 9
 
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(tvoc) + ', "ppb", 10);\n'
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(coo) + ', "ppm", 9);\n'
+		statements = 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(tvoc) + '", "ppb", 10);'
+		statements += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(coo) + '", "ppm", 9);'
 
-	print(statement)
+	print(statements)
 	
 	try:
 		connection = mysql.connector.connect(
@@ -49,7 +48,9 @@ def writeToDB(msg, value):
 		db_Info = connection.get_server_info()
 		print("Connected to MySQL Server version ", db_Info)
 		cursor = connection.cursor()
-		cursor.execute(statement, multi=True)
+		for statement in statements.split(';'):
+			if len(statement) > 0:
+				cursor.execute(statement + ';')
 		connection.commit()
 		print(cursor.rowcount, "record inserted successfully into table")
 		record = cursor.fetchone()

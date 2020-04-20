@@ -8,6 +8,8 @@ services:
       - air-quality-db
     links:
       - air-quality-db
+    volumes:
+    - ./UI/app:/UI:ro
 
   air-quality-parser:
     build: ./parser/

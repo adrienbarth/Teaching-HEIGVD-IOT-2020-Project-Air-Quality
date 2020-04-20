@@ -15,7 +15,7 @@ $sensorValues = $SensorValueDAO->getAllSensorValues();
 <!doctype html>
 <html>
 <head>
-    <title>IOT2020</title>
+    <title>Teaching-HEIGVD-IOT-2020-Project-Air-Quality</title>
     <link rel="stylesheet" href="/Styles/bootstrap.min.css">
     <link rel="stylesheet" href="/Styles/sticky-footer-navbar.css">
 </head>
@@ -23,34 +23,13 @@ $sensorValues = $SensorValueDAO->getAllSensorValues();
     <header>
         <!-- Fixed navbar -->
         <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
-            <a class="navbar-brand" href="/Messages/List">IOT2020</a>
-            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarCollapse">
-                <ul class="navbar-nav mr-auto">
-                    <?php
-                        foreach ($devices as $device) {
-                        echo '<li class="nav-item"><a class="nav-link" href="/Devices/'.$device->EUI.'">'.$device->name.'</a></li>';
-                        }
-                    ?>
-                </ul>
-            </div>
+            <a class="navbar-brand" href="/Messages/List">Teaching-HEIGVD-IOT-2020-Project-Air-Quality</a>
+
         </nav>
     </header>
-    <form id="head_new_message" action="/Messages/New" method="post">
-    </form>
-    <form id="head_new_user" action="/Users/New" method="post">
-    </form>
-    <form id="head_change_password" action="/Users/Edit" method="post">
-    </form>
-    <form id="head_logoff" action="/Users/Logoff" method="post">
-    </form>
-    <!-- Begin page content -->
-    <main role="main" class="container">
-        <div class="container" role="main">
-            <h1 class="mt-5">Last values</h1>
-            <table class="table table-bordered">
+    <main class="container-fluid" role="main">
+        <div class="container-fluid" role="main">
+            <table class="table table-bordered table-sm table-hover">
                 <thead>
                     <tr>
                     <th scope="col">EUI</th>
@@ -58,6 +37,7 @@ $sensorValues = $SensorValueDAO->getAllSensorValues();
                     <th scope="col">Sensor</th>
                     <th scope="col">Date</th>
                     <th scope="col">Value</th>
+                    <th scope="col">Unit</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -69,6 +49,7 @@ $sensorValues = $SensorValueDAO->getAllSensorValues();
                             echo '<td>'.$sensorValue->name.'</td>';
                             echo '<td>'.$sensorValue->date.'</td>';
                             echo '<td>'.$sensorValue->payload.'</td>';
+                            echo '<td>'.$sensorValue->unite.'</td>';
                             echo '</tr>';
                         }
                     ?>
