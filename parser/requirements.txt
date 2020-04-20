@@ -1,0 +1,2 @@
+ttn
+mysql.connector

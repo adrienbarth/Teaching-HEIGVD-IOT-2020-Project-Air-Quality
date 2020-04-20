@@ -67,7 +67,7 @@ def writeToDB(msg, value):
 
 	
 	except Error as e:
-	print("Error while connecting to MySQL", e)
+	    print("Error while connecting to MySQL", e)
 	finally:
 		if (connection.is_connected()):
 			cursor.close()

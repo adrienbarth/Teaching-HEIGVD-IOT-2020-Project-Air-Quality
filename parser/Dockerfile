@@ -1,4 +1,10 @@
 FROM python:3
-COPY ./script.py /usr/app/
-WORKDIR /usr/app
-CMD ["python3", "./script.py"]
+
+WORKDIR /usr/src/app
+
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+COPY . .
+
+CMD [ "python", "./script.py" ]
