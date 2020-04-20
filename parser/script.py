@@ -23,7 +23,7 @@ def writeToDB(msg, value):
 	sqlDate = date + " " + str(hour)
 	
 
-	statement = "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", "
+	
 	
 	if msg.dev_id == "environment-2":
 		temp, pressure, humidity, uv = value.split('00')
@@ -33,18 +33,25 @@ def writeToDB(msg, value):
 		humidity = int(humidity,16) #%rh id 7
 		uv = int(uv,16)			#ohms id 8
 
-		statement += str(temp) + ", " + "celsius, 6);\n"
-		statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(pressure) + ", " + "hPA, 5);\n"
-		statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(humidity) + ", " + "rh, 7);\n"
-		statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(uv) + ", " + "ohms, 8);\n"
+		#statement += str(temp) + ", " + "celsius, 6);\n"
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(pressure)', "hPA", 5);\n'
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(temp)', "Celsius", 6);\n'
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(humidity)', "rh", 7);\n'
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(uv)', "ohms", 8);\n'
+		#statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(pressure) + ", " + "hPA, 5);\n"
+		#statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(humidity) + ", " + "rh, 7);\n"
+		#statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(uv) + ", " + "ohms, 8);\n"
 
 
 	elif msg.dev_id == "airquality":
 		tvoc = value[:2]		#ppb id 10
 		coo = value[2:]			#ppm id 9
 
-		statement += tvoc + ", " + "ppb, 10);\n"
-		statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(coo) + ", " + "ppm, 9);\n"
+		#statement += tvoc + ", " + "ppb, 10);\n"
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(tvoc)', "ppb", 10);\n'
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(coo)', "ppm", 9);\n'
+		#statement = "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", "
+		#statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(coo) + ", " + "ppm, 9);\n" 
 
 	print(statement)
 	
