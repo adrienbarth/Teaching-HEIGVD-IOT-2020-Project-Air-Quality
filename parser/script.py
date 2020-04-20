@@ -34,10 +34,10 @@ def writeToDB(msg, value):
 		uv = int(uv,16)			#ohms id 8
 
 		#statement += str(temp) + ", " + "celsius, 6);\n"
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(pressure)', "hPA", 5);\n'
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(temp)', "Celsius", 6);\n'
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(humidity)', "rh", 7);\n'
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(uv)', "ohms", 8);\n'
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(pressure) + ', "hPA", 5);\n'
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(temp) + ', "Celsius", 6);\n'
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(humidity) + ', "rh", 7);\n'
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(uv) + ', "ohms", 8);\n'
 		#statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(pressure) + ", " + "hPA, 5);\n"
 		#statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(humidity) + ", " + "rh, 7);\n"
 		#statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(uv) + ", " + "ohms, 8);\n"
@@ -48,8 +48,8 @@ def writeToDB(msg, value):
 		coo = value[2:]			#ppm id 9
 
 		#statement += tvoc + ", " + "ppb, 10);\n"
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(tvoc)', "ppb", 10);\n'
-		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("'sqlDate'", 'str(coo)', "ppm", 9);\n'
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(tvoc) + ', "ppb", 10);\n'
+		statement += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", ' + str(coo) + ', "ppm", 9);\n'
 		#statement = "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", "
 		#statement += "INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (" + '"' +sqlDate +'"' +", " + str(coo) + ", " + "ppm, 9);\n" 
 
