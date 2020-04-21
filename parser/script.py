@@ -22,17 +22,17 @@ def writeToDB(msg, value):
 		humidity = int(humidity,16) #%rh id 7
 		uv = int(uv,16)			#ohms id 8
 
-		statements = 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(pressure) + '", "hPA", 5);'
-		statements += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(temp) + '", "Celsius", 6);'
-		statements += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(humidity) + '", "rh", 7);'
-		statements += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(uv) + '", "ohms", 8);'
+		statements = 'INSERT INTO iot2020.sensorValues(date, payload, fk_sensor_id) VALUES (NOW(), "' + str(pressure) + '", 1);'
+		statements += 'INSERT INTO iot2020.sensorValues(date, payload, fk_sensor_id) VALUES (NOW(), "' + str(temp) + '", 2);'
+		statements += 'INSERT INTO iot2020.sensorValues(date, payload, fk_sensor_id) VALUES (NOW(), "' + str(humidity) + '", 3);'
+		statements += 'INSERT INTO iot2020.sensorValues(date, payload, fk_sensor_id) VALUES (NOW(), "' + str(uv) + '", 4);'
 
 	elif msg.dev_id == "environment-2":
 		tvoc = value[:2]		#ppb id 10
 		coo = value[2:]			#ppm id 9
 
-		statements = 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(tvoc) + '", "ppb", 10);'
-		statements += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES ("' + sqlDate + '", "' + str(coo) + '", "ppm", 9);'
+		statements = 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (NOW(), "' + str(tvoc) + '", 5);'
+		statements += 'INSERT INTO iot2020.sensorValues(date, payload, unite, fk_sensor_id) VALUES (NOW(), "' + str(coo) + '", 6);'
 
 	print(statements)
 	

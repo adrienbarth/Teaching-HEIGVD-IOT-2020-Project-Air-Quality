@@ -29,13 +29,17 @@ $sensorValues = $SensorValueDAO->getAllSensorValues();
     </header>
     <main class="container-fluid" role="main">
         <div class="container-fluid" role="main">
+            <br/>
+            <br/>
+            <br/>
             <table class="table table-bordered table-sm table-hover">
                 <thead>
                     <tr>
                     <th scope="col">EUI</th>
                     <th scope="col">Location</th>
-                    <th scope="col">Sensor</th>
+                    <th scope="col">Device name</th>
                     <th scope="col">Date</th>
+                    <th scope="col">Sensor</th>
                     <th scope="col">Value</th>
                     <th scope="col">Unit</th>
                     </tr>
@@ -48,8 +52,9 @@ $sensorValues = $SensorValueDAO->getAllSensorValues();
                             echo '<td>'.$sensorValue->location.'</td>';
                             echo '<td>'.$sensorValue->name.'</td>';
                             echo '<td>'.$sensorValue->date.'</td>';
+                            echo '<td>'.$sensorValue->sensorName.'</td>';
                             echo '<td>'.$sensorValue->payload.'</td>';
-                            echo '<td>'.$sensorValue->unite.'</td>';
+                            echo '<td>'.$sensorValue->unit.'</td>';
                             echo '</tr>';
                         }
                     ?>
