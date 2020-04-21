@@ -55,7 +55,7 @@ function wait(ms){
 /* Initialize RN2483 card to connect with TTN */
 sendToRn2483("mac set appeui 70B3D57ED002C231");
 wait(2000);
-sendToRn2483("mac set appkey A28D391EE90BD9C6CD9FD1E83483E8AC"); // A28D391EE90BD9C6CD9FD1E83483E8AC or A752A3065ABB40EDF0056A4D5E6B879E
+sendToRn2483("mac set appkey A752A3065ABB40EDF0056A4D5E6B879E"); // A752A3065ABB40EDF0056A4D5E6B879E or A28D391EE90BD9C6CD9FD1E83483E8AC
 wait(2000);
 sendToRn2483("mac join otaa");
 wait(2000);
@@ -88,10 +88,16 @@ setInterval(function() {
   var humidity = parseInt(JSON.stringify(data.humidity));
   var gas = parseInt(JSON.stringify(data.gas_resistance));
 
-  // Send to TTN (the 00 are only here to delimit the data)
-  sendToRn2483("mac tx uncnf 10 " + temp.toString(16) + "00" + pressure.toString(16) + "00" + humidity.toString(16) + "00" + gas.toString(16));
+  // Send to TTN
+  sendToRn2483("mac tx uncnf 2 " + temp.toString(16));
+  wait(1000);
+  sendToRn2483("mac tx uncnf 1 " + pressure.toString(16));
+  wait(1000);
+  sendToRn2483("mac tx uncnf 3 " + humidity.toString(16));
+  wait(1000);
+  sendToRn2483("mac tx uncnf 4 " + gas.toString(16));
 
-}, 5000);
+}, 8000);
 
 /* This instruction is needed to save the script in the MCU flash memory */
 save();
