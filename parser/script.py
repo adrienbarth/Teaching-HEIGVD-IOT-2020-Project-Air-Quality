@@ -29,7 +29,7 @@ def writeToDB(sensor_id, value):
             print("MySQL connection is closed")
 
 def uplink_callback(msg, client):
-	print(msg)
+	print("Received uplink from ", msg.dev_id)
 	value = str(int(str(base64.b64decode(msg.payload_raw).hex()),16))
 	sensor_id = msg.port
 	writeToDB(sensor_id, value)
