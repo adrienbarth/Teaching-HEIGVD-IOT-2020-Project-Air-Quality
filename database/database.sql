@@ -24,8 +24,9 @@ CREATE TABLE data_types
 	name			varchar(50) not null,
 	bytes			int not null,
 	signed			tinyint(1) not null,
-	precision		float not null,
-	unit			varchar(10) not null
+	accuracy		float not null,
+	unit			varchar(10) not null,
+	event_url       varchar(255) null
 );
 
 CREATE TABLE sensor_values
@@ -44,15 +45,9 @@ CREATE TABLE sensor_values
 INSERT INTO devices VALUES ("0004A30B0024D376", "airquality", "Lausanne", 1);
 INSERT INTO devices VALUES ("0004A30B00215E8C", "environment-2", "Vevey", 1);
 
-INSERT INTO data_types VALUES (3303, "Temperature", 2, 1, 0.1, "°C");
-INSERT INTO data_types VALUES (3304, "RH", 1, 0, 0.5, "%");
-INSERT INTO data_types VALUES (3315, "Pressure", 2, 0, 0.1, "hPa");
-INSERT INTO data_types VALUES (3325, "Concentration", 2, 0, 1, "ppm");
+INSERT INTO data_types VALUES (3303, "Temperature", 2, 1, 0.1, "°C", "http://rfid-api:8080/event");
+INSERT INTO data_types VALUES (3304, "RH", 1, 0, 0.5, "%", "");
+INSERT INTO data_types VALUES (3315, "Pressure", 2, 0, 0.1, "hPa", "");
+INSERT INTO data_types VALUES (3325, "Concentration", 2, 0, 1, "ppm", "");
 
-INSERT INTO sensors VALUES (0, "Pression", "hPA", "0004A30B0024D376");
-INSERT INTO sensors VALUES (0, "Température", "Celsius", "0004A30B0024D376");
-INSERT INTO sensors VALUES (0, "Humidité", "rh", "0004A30B0024D376");
-/* INSERT INTO sensors VALUES (0, "Résistance", "Ohms", "0004A30B0024D376"); */
-
-INSERT INTO sensors VALUES (0, "TVOC", "ppb", "0004A30B00215E8C");
-/* INSERT INTO sensors VALUES (0, "CO2", "ppm", "0004A30B00215E8C"); */
+INSERT INTO sensor_values VALUES (0, now(), "25.5", "0004A30B00215E8C", 3303);

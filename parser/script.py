@@ -7,24 +7,36 @@ from mysql.connector import Error
 app_id = "groupe-adrien"
 access_key = "ttn-account-v2.yxmXtnn1KRl6VrkLoHSEF0_6kBsjBBLsP8QopR-q6Vo"
 
-handler = ttn.HandlerClient(app_id, access_key)
+# MySQL
+db_host =     'localhost'
+db_schema =   'iot2020'
+db_user =     'root'
+db_password = 'T2sF8fxIK7ctLS0kR1gT'
 
-'''
-Temp            3303 = 0CE7 = 2 bytes
-RH              3304 = 0CE8 = 1 bytes
-Pressure        3315 = 0CF3 = 2 bytes
-Concentration   3325 = 0CFD = 2 bytes
+datatypes = {}
 
-0CE712340CE8430CF354320CFDED23
+def fetch_datatypes():
+    '''
+    Fetch datatypes from the database and return a dictionary of data types.
+    '''
+    try:
+        connection = mysql.connector.connect(host=db_host, database=db_schema, user=db_user, password=db_password)
+        cursor = connection.cursor()
+        cursor.execute("SELECT * FROM data_types")
+        results = cursor.fetchall()
+    except mysql.connector.Error as error:
+        print("Failed to insert into MySQL table {}".format(error))
+    finally:
+        if connection.is_connected():
+            cursor.close()
+            connection.close()
+    
+    data = {}
+    for x in results:
+        print("[DEBUG] Datatype found: " + str(x))
+        data.update( {x[0] : {'name' : x[1], 'bytes' : x[2], 'signed' : x[3], 'accuracy' : x[4], 'unit' : x[5], 'event_url': x[6]}})
 
-'''
-
-data_types = {}
-
-DATA_TYPES = {3303 : {'bytes': 2, 'signed': True,  'precision': 0.1, 'unit': '°C'},
-              3304 : {'bytes': 1, 'signed': False, 'precision': 0.5, 'unit': '%'},
-              3315 : {'bytes': 2, 'signed': False, 'precision': 0.1, 'unit': 'hPa'},
-              3325 : {'bytes': 2, 'signed': False, 'precision': 1,   'unit': 'ppm'}}
+    return data
 
 def parse_payload(payload):
     '''
@@ -35,79 +47,86 @@ def parse_payload(payload):
     data = {}
 
     while payload:
-        # Extract the data type
-        data_type = int(payload[:4], 16)
+        # Extract the datatype
+        datatypeID = int(payload[:4], 16)
         payload = payload[4:]
 
-        # Verifying if we know this data type
-        if data_type not in DATA_TYPES:
-            raise ValueError("Wrong data type received, unable to parse the payload...")
-        DATA_TYPE_SPEC = DATA_TYPES[data_type]
+        # Verifying if we know this datatype
+        if datatypeID not in datatypes:
+            raise ValueError("[WARNING] Wrong datatype received, unable to parse the payload...")
+        datatype = datatypes[datatypeID]
 
         # Extract the value and convert it
-        value = int(payload[:DATA_TYPE_SPEC['bytes'] * 2], 16)
-        payload = payload[DATA_TYPE_SPEC['bytes'] * 2:]
-        value = value * DATA_TYPE_SPEC['precision']
+        value = int(payload[:datatype['bytes'] * 2], 16)
+        payload = payload[datatype['bytes'] * 2:]
+        value = value * datatype['accuracy']
 
         # Add the value to the dataset
-        data.update( {data_type : value} )
+        data.update( {datatypeID : value} )
+
+        # If needed, notify an event API
+        if datatype['event_url']:
+            notify_event_api(datatype, value, datatype['event_url'])
 
     return data
 
+def notify_event_api(datatype, value, url):
+    print("[DEBUG] Notifying " + url)
+    return "todo"
 
-def writeToDB(sensor_id, value):
+def write_data_to_db(value, device_EUI, datatype_ID):
+    '''
+
+    '''
     try:
-        connection = mysql.connector.connect(host='air-quality-db', database='iot2020', user='root', password='d04kdzepq33kadf3qp314rm3o')
+        connection = mysql.connector.connect(host=db_host, database=db_schema, user=db_user, password=db_password)
         cursor = connection.cursor()
-        query = "INSERT INTO iot2020.sensorValues(date, payload, fk_sensor_id) VALUES (NOW(), %s, %s)"
-        recordTuple = (value, sensor_id)
+        query = "INSERT INTO sensor_values(date, value, fk_device_EUI, fk_data_type_ID) VALUES (NOW(), %s, %s, %s)"
+        recordTuple = (value, device_EUI, datatype_ID)
         cursor.execute(query, recordTuple)
         connection.commit()
-        print("Record inserted successfully into sensorValues table")
+        print("[DEBUG] Device " + str(device_EUI) + " reported value " + str(value) + " for datatype ID " + str(datatype_ID) + ".")
 
     except mysql.connector.Error as error:
-        print("Failed to insert into MySQL table {}".format(error))
+        print("[ERROR] Failed to insert into MySQL table {}".format(error))
 
     finally:
         if (connection.is_connected()):
             cursor.close()
             connection.close()
-            print("MySQL connection is closed")
 
 def uplink_callback(msg, client):
-    print("Received uplink from ", msg.dev_id)
-    print(msg)
+    '''
+
+    '''
     payload_hexa = base64.b64decode(msg.payload_raw).hex()
 
     try:
         data = parse_payload(payload_hexa)
-        print(data)
-        #write_to_database(data, device_serial)
+        for key in data:
+            write_data_to_db(data[key], msg.hardware_serial, key)
     except ValueError as error:
         print(error)
 
-    #value = int(str(base64.b64decode(msg.payload_raw).hex()),16)
-    print(value)
-    sensor_id = msg.port
-    writeToDB(sensor_id, value)
-
-def main():
-    print("Teaching-HEIGVD-IOT-2020-Project-Air-Quality@PARSER")
-
-    # Fetching data types from db..
-
-    #
-
-if __name__ == "__main__":
-    main()
+        
+    print("[INFO] Uplink from device EUI " + str(msg.hardware_serial) + " successfully recorded in the database.")
 
 
-# using mqtt client
+
+#main
+print("**** Teaching-HEIGVD-IOT-2020-Project-Air-Quality@PARSER ****")
+
+datatypes = fetch_datatypes()
+print("[INFO] Datatypes successfully fetched from the database.")
+
+handler = ttn.HandlerClient(app_id, access_key)
 mqtt_client = handler.data()
 mqtt_client.set_uplink_callback(uplink_callback)
+print("[INFO] Successfully connected to The Things Network API.")
+
+print("[INFO] Waiting for uplinks...")
 while True:
     mqtt_client.connect()
-
     time.sleep(60)
 
 mqtt_client.close()
