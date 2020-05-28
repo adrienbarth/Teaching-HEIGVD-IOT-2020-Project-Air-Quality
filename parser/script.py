@@ -53,7 +53,7 @@ def parse_payload(payload):
 
         # Verifying if we know this datatype
         if datatypeID not in datatypes:
-            raise ValueError("[WARNING] Wrong datatype received, unable to parse the payload...")
+            raise ValueError("[WARNING] Invalid payload format...")
         datatype = datatypes[datatypeID]
 
         # Extract the value and convert it
@@ -105,13 +105,10 @@ def uplink_callback(msg, client):
         data = parse_payload(payload_hexa)
         for key in data:
             write_data_to_db(data[key], msg.hardware_serial, key)
+
+        print("[INFO] Uplink from device EUI " + str(msg.hardware_serial) + " successfully recorded in the database.")
     except ValueError as error:
         print(error)
-
-        
-    print("[INFO] Uplink from device EUI " + str(msg.hardware_serial) + " successfully recorded in the database.")
-
-
 
 #main
 print("**** Teaching-HEIGVD-IOT-2020-Project-Air-Quality@PARSER ****")
