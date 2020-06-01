@@ -3,7 +3,7 @@ services:
   air-quality-ui:
     build: ./UI/
     ports:
-      - 8080:80
+      - 8082:80
     depends_on:
       - air-quality-db
     links:
