@@ -52,9 +52,9 @@ INSERT INTO devices VALUES ("blovis-environment-click", "unknown", "Yverdon", 1)
 INSERT INTO data_types VALUES (3302, "Presence", 1, 0, 1, "", "", null);
 INSERT INTO data_types VALUES (3303, "Temperature", 2, 1, 0.1, "°C", "", null);
 INSERT INTO data_types VALUES (3304, "RH", 1, 0, 0.5, "%", "", null);
-INSERT INTO data_types VALUES (3315, "Pressure", 2, 0, 0.1, "hPa", "http://localhost:5000/event", "blovis-environment-click");
+INSERT INTO data_types VALUES (3315, "Pressure", 2, 0, 0.1, "hPa", "http://10.192.75.102:8081/event", "blovis-environment-click");
 INSERT INTO data_types VALUES (3324, "Loudness", 2, 0, 0.1, "mV", "", "environment-2");
-INSERT INTO data_types VALUES (3325, "Concentration", 2, 0, 1, "ppm", "http://localhost:5000/event", "blovis-environment-click");
+INSERT INTO data_types VALUES (3325, "Concentration", 2, 0, 1, "ppm", "http://10.192.75.102:8081/event", "blovis-environment-click");
 INSERT INTO data_types VALUES (3336, "Location", 6, 1, 0.0001, "°", "", "airquality");
 INSERT INTO data_types VALUES (3341, "RFID tag ID", 4, 0, 1, "", "", null);
 
