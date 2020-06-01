@@ -1,2 +1,4 @@
 ttn
 mysql.connector
+flask
+requests

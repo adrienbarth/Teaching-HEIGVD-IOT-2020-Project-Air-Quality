@@ -3,7 +3,7 @@ services:
   air-quality-ui:
     build: ./UI/
     ports:
-      - 8090:80
+      - 8080:80
     depends_on:
       - air-quality-db
     links:
@@ -30,4 +30,4 @@ services:
   air-quality-db:
     build: ./database/
     environment:
-      - MYSQL_ROOT_PASSWORD=d04kdzepq33kadf3qp314rm3o
+      - MYSQL_ROOT_PASSWORD=T2sF8fxIK7ctLS0kR1gT

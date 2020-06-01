@@ -12,7 +12,7 @@ access_key = "ttn-account-v2.yxmXtnn1KRl6VrkLoHSEF0_6kBsjBBLsP8QopR-q6Vo"
 db_host =     'air-quality-db'
 db_schema =   'iot2020'
 db_user =     'root'
-db_password = 'd04kdzepq33kadf3qp314rm3o'
+db_password = 'T2sF8fxIK7ctLS0kR1gT'
 
 datatypes = {}
 
