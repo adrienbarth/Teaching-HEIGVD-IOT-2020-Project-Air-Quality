@@ -1,6 +1,7 @@
 import time
 import ttn
 import base64
+import requests
 import mysql.connector
 from mysql.connector import Error
 
@@ -8,10 +9,10 @@ app_id = "groupe-adrien"
 access_key = "ttn-account-v2.yxmXtnn1KRl6VrkLoHSEF0_6kBsjBBLsP8QopR-q6Vo"
 
 # MySQL
-db_host =     'localhost'
+db_host =     'air-quality-db'
 db_schema =   'iot2020'
 db_user =     'root'
-db_password = 'T2sF8fxIK7ctLS0kR1gT'
+db_password = 'd04kdzepq33kadf3qp314rm3o'
 
 datatypes = {}
 
@@ -34,7 +35,7 @@ def fetch_datatypes():
     data = {}
     for x in results:
         print("[DEBUG] Datatype found: " + str(x))
-        data.update( {x[0] : {'name' : x[1], 'bytes' : x[2], 'signed' : x[3], 'accuracy' : x[4], 'unit' : x[5], 'event_url': x[6]}})
+        data.update( {x[0] : {'name' : x[1], 'bytes' : x[2], 'signed' : x[3], 'accuracy' : x[4], 'unit' : x[5], 'event_url': x[6], 'device_EUI': x[7]}})
 
     return data
 
@@ -71,10 +72,12 @@ def parse_payload(payload):
     return data
 
 def notify_event_api(datatype, value, url):
-    print("[DEBUG] Notifying " + url)
-    return "todo"
+    headers = {'Accept' : 'application/json', 'Content-Type' : 'application/json'}
+    json = '{ "data_type" : "' + str(datatype['name']) + '", "data" : [{ "' + str(datatype['name']) + '": "' + str(value) + '"}]}'
+    response = requests.post(url, data=json, headers=headers)
+    print("[DEBUG] API " + url + " has been notified (status code: " + str(response.status_code) + ").")
 
-def write_data_to_db(value, device_EUI, datatype_ID):
+def write_data_to_db(value, device_id, datatype_ID):
     '''
 
     '''
@@ -82,10 +85,10 @@ def write_data_to_db(value, device_EUI, datatype_ID):
         connection = mysql.connector.connect(host=db_host, database=db_schema, user=db_user, password=db_password)
         cursor = connection.cursor()
         query = "INSERT INTO sensor_values(date, value, fk_device_EUI, fk_data_type_ID) VALUES (NOW(), %s, %s, %s)"
-        recordTuple = (value, device_EUI, datatype_ID)
+        recordTuple = (value, device_id, datatype_ID)
         cursor.execute(query, recordTuple)
         connection.commit()
-        print("[DEBUG] Device " + str(device_EUI) + " reported value " + str(value) + " for datatype ID " + str(datatype_ID) + ".")
+        print("[DEBUG] Device " + str(device_id) + " reported value " + str(value) + " for datatype ID " + str(datatype_ID) + ".")
 
     except mysql.connector.Error as error:
         print("[ERROR] Failed to insert into MySQL table {}".format(error))
@@ -104,7 +107,7 @@ def uplink_callback(msg, client):
     try:
         data = parse_payload(payload_hexa)
         for key in data:
-            write_data_to_db(data[key], msg.hardware_serial, key)
+            write_data_to_db(data[key], msg.dev_id, key)
 
         print("[INFO] Uplink from device EUI " + str(msg.hardware_serial) + " successfully recorded in the database.")
     except ValueError as error:

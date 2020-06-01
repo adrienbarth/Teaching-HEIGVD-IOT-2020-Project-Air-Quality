@@ -17,6 +17,13 @@ services:
       - air-quality-db
     links:
       - air-quality-db
+
+  air-quality-event-api:
+    build: ./event-api/
+    depends_on:
+      - air-quality-db
+    links:
+      - air-quality-db
   
   air-quality-db:
     build: ./database/
