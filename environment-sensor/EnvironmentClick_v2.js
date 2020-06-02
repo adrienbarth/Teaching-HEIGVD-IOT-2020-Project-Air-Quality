@@ -97,7 +97,7 @@ Serial3.on('data', function (data) {
 					// 3324 (loudness) --> 0CFC
 					if (serialRxData.includes("0CFC")) {
 						var dataReceived = serialRxData.substr(serialRxData.length - 4);
-						var loudness = parseInt(dataReceived);
+						var loudness = parseInt(dataReceived) / 10;
 						console.log("loundess value received : " + loudness);
 						// si plus grand que 5 mV on allume une led sinon l'autre.
 						if (loudness > 5) {
