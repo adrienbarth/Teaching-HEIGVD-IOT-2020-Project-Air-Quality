@@ -1,11 +1,9 @@
 FROM python:3
 
-ENV FLASK_APP=main.py
 WORKDIR /usr/src/app
 
-COPY requirements.txt ./
+COPY ./app /usr/src/app
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY . .
-
+ENV FLASK_APP=main.py
 CMD [ "python3", "-u", "main.py" ]

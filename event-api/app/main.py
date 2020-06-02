@@ -1,18 +1,24 @@
-from flask import Flask, request, jsonify
 import mysql.connector
-from mysql.connector import Error
 import ttn
+import argparse
 
-app = Flask(__name__)
+from .datatype import DataType
+from mysql.connector import Error
+from flask import request, jsonify
+from app import app
+
 app_id = "groupe-adrien"
 access_key = "ttn-account-v2.yxmXtnn1KRl6VrkLoHSEF0_6kBsjBBLsP8QopR-q6Vo"
 
-# MySQL
-db_host =     'air-quality-db'
-db_schema =   'iot2020'
-db_user =     'root'
-db_password = 'T2sF8fxIK7ctLS0kR1gT'
-
+# Argument parsing
+'''
+parser = argparse.ArgumentParser(description='Teaching-HEIGVD-IOT-2020-Project-Air-Quality@PARSER')
+parser.add_argument("--host",     help="Database host")
+parser.add_argument("--schema",   help="Database schema")
+parser.add_argument("--user",     help="Database username")
+parser.add_argument("--password", help="Datapase user password")
+args, _ = parser.parse_args()
+'''
 datatypes = {}
 
 @app.route('/event', methods=['POST'])
@@ -36,9 +42,9 @@ def event_handler():
         print("[DEBUG] Event for datatype '" + data_type + "' received.")
 
         # Checking if we are intersted with that datatype
-        for dt in datatypes:
-            if datatypes[dt]['name'] == data_type and datatypes[dt]['device_EUI']:
-                send_downlink(datatypes[dt]['device_EUI'], req_json)
+        for dt in datatypes.values():
+            if dt.name == data_type and dt.downlink_device_id:
+                send_downlink(dt.downlink_device_id, req_json)
         
     except ValueError as error:
         print("[WARNING] Event ignored due to unrecognized JSON format: " + str(req_json))
@@ -57,27 +63,4 @@ def send_downlink(device_id, msg):
     mqtt_client.close()
     print("[DEBUG] Downlink has been sent to device '" + device_id + "'")
 
-def fetch_datatypes():
-    '''
-    Fetch datatypes from the database and return a dictionary of data types.
-    '''
-    try:
-        mysql_con = mysql.connector.connect(host=db_host, database=db_schema, user=db_user, password=db_password)
-        cursor = mysql_con.cursor()
-        cursor.execute("SELECT * FROM data_types")
-        results = cursor.fetchall()
-    except mysql.connector.Error as error:
-        print("Failed to insert into MySQL table {}".format(error))
-    finally:
-        if mysql_con.is_connected():
-            cursor.close()
-            mysql_con.close()
-    
-    data = {}
-    for x in results:
-        print("[DEBUG] Datatype found: " + str(x))
-        data.update( {x[0] : {'name' : x[1], 'bytes' : x[2], 'signed' : x[3], 'accuracy' : x[4], 'unit' : x[5], 'event_url': x[6], 'device_EUI': x[7]}})
-
-    return data
-
-datatypes = fetch_datatypes()
+datatypes = DataType.get_all("127.0.0.1", "iot2020", "root", "T2sF8fxIK7ctLS0kR1gT")

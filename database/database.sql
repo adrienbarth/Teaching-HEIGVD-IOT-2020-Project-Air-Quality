@@ -12,24 +12,25 @@ USE iot2020;
 
 CREATE TABLE devices
 (
-	EUI				varchar(255) not null unique primary key,
-    name			varchar(255) not null,
-    location		varchar(255) null,
-    is_enabled 		tinyint(1) default 1 not null
+	device_id   varchar(255) not null unique primary key,
+    device_eui  varchar(255) not null,
+    location    varchar(255) null
 );
 
 CREATE TABLE data_types
 (
-	ID				int not null unique primary key,
-	name			varchar(255) not null,
-	bytes			int not null,
-	signed			tinyint(1) not null,
-	accuracy		float not null,
-	unit			varchar(10) null,
-	event_url       varchar(255) null,
-    fk_device_EUI  varchar(255) null,
+	xml_id			      	int not null unique primary key,
+	name                    varchar(255) not null,
+	data_bytes              int not null,
+    data_signed             tinyint(1) not null,
+	data_resolution_per_bit float not null,
+	unit			        varchar(10) null,
+	event_api_host          varchar(255) null,
+	event_api_port          int null,
+	event_api_path          varchar(255) null,
+    downlink_device_id      varchar(255) null,
     constraint data_types_to_devices_fk
-        foreign key (fk_device_EUI) references devices (EUI)
+        foreign key (downlink_device_id) references devices (device_id)
 );
 
 CREATE TABLE sensor_values
@@ -37,25 +38,25 @@ CREATE TABLE sensor_values
 	ID				int auto_increment primary key,
 	date			datetime not null,
 	value			varchar(255) not null,
-    fk_device_EUI 	varchar(255) not null,
-	fk_data_type_ID int not null,
+    fk_device_id 	varchar(255) not null,
+	fk_data_type_xml_id int not null,
     constraint sensor_values_to_devices_fk
-        foreign key (fk_device_EUI) references devices (EUI),
+        foreign key (fk_device_id) references devices (device_id),
     constraint sensor_values_to_data_types_fk
-        foreign key (fk_data_type_ID) references data_types (ID)
+        foreign key (fk_data_type_xml_id) references data_types (xml_id)
 );
 
-INSERT INTO devices VALUES ("airquality", "Analyse de l'air", "Lausanne", 1);
-INSERT INTO devices VALUES ("environment-2", "Analyse de l'environnement", "Vevey", 1);
-INSERT INTO devices VALUES ("blovis-environment-click", "unknown", "Yverdon", 1);
+INSERT INTO devices VALUES ("airquality", "Analyse de l'air", 1);
+INSERT INTO devices VALUES ("environment-2", "Analyse de l'environnement", 1);
+INSERT INTO devices VALUES ("blovis-environment-click", "unknown", 1);
 
-INSERT INTO data_types VALUES (3302, "Presence", 1, 0, 1, "", "", null);
-INSERT INTO data_types VALUES (3303, "Temperature", 2, 1, 0.1, "°C", "", null);
-INSERT INTO data_types VALUES (3304, "RH", 1, 0, 0.5, "%", "", null);
-INSERT INTO data_types VALUES (3315, "Pressure", 2, 0, 0.1, "hPa", "http://air-quality-event-api:5000/event", "blovis-environment-click");
-INSERT INTO data_types VALUES (3324, "Loudness", 2, 0, 0.1, "mV", "", "environment-2");
-INSERT INTO data_types VALUES (3325, "Concentration", 2, 0, 1, "ppm", "http://air-quality-event-api:5000/event", "blovis-environment-click");
-INSERT INTO data_types VALUES (3336, "Location", 6, 1, 0.0001, "°", "", "airquality");
-INSERT INTO data_types VALUES (3341, "RFID tag ID", 4, 0, 1, "", "", null);
+INSERT INTO data_types VALUES (3302, "Presence", 1, 0, 1, "", "", null, "", null);
+INSERT INTO data_types VALUES (3303, "Temperature", 2, 1, 0.1, "°C", "", null, "", null);
+INSERT INTO data_types VALUES (3304, "RH", 1, 0, 0.5, "%", "", null, "", null);
+INSERT INTO data_types VALUES (3315, "Pressure", 2, 0, 0.1, "hPa", "127.0.0.1", 5000, "/event", "blovis-environment-click");
+INSERT INTO data_types VALUES (3324, "Loudness", 2, 0, 0.1, "mV", "", null, "", "environment-2");
+INSERT INTO data_types VALUES (3325, "Concentration", 2, 0, 1, "ppm", "127.0.0.1", "5000", "/event", "blovis-environment-click");
+INSERT INTO data_types VALUES (3336, "Location", 6, 1, 0.0001, "°", "", null, "", "airquality");
+INSERT INTO data_types VALUES (3341, "RFID tag ID", 4, 0, 1, "", "", null, "", null);
 
 INSERT INTO sensor_values VALUES (0, now(), "25.5", "airquality", 3303);
