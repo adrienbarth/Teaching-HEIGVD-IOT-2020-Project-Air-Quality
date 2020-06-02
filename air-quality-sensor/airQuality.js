@@ -69,7 +69,7 @@ Serial3.on('data', function(data) {
           console.log("Info : joinOtaa accepted");
         }else{
           error = true;
-          console.log("Error : joinOtaa");
+          console.log("Error : joinOtaa accepted");
         }
         break;
         
@@ -79,7 +79,7 @@ Serial3.on('data', function(data) {
           loraState = "joinOtaaAccepted";
         }else{
           error = true;
-          console.log("Error : joinOtaa");
+          console.log("Error : joinOtaa Ok");
         }
       break;
 
@@ -98,12 +98,13 @@ Serial3.on('data', function(data) {
         if(serialRxData.indexOf("mac_rx") != -1 || serialRxData.indexOf("mac_tx_ok") != -1){
           console.log("Info : waitForDownlinkMss Ok");
           // 33 36 --> 21 24
-          if(serialRxData.includes("2124")){
+          if(serialRxData.indexOf("2124") != -1){
             var dataReceived = serialRxData.substr(serialRxData.length - 6);
             var lat = parseInt(dataReceived.substr(3));
             var long = parseInt(dataReceived.substr(dataReceived.length - 3));
             
             // Hémisphère sud si lat <= 0 sinon hémisphère nord
+            lat =  lat - 0x10000; // Permet de savoir si la latitude est négative ou positive
             if(lat <= 0){
               digitalWrite(E12, 1);
               digitalWrite(E15, 0);
@@ -187,8 +188,15 @@ function sendData(){
       console.log(baseline);
       if(!error){
         loraState = "sendLoRaPacket";
-        sendToRn2483("mac tx uncnf 5 2119" + baseline[1].toString(16));
-        console.log(baseline[1]);
+        value = baseline[1].toString(16);
+        console.log(value);
+        if(value.length == 1){
+          sendToRn2483("mac tx uncnf 5 2119000" + value);
+        }else if (value.length == 2){
+          sendToRn2483("mac tx uncnf 5 211900" + value);
+        }else if (value.length == 3){
+          sendToRn2483("mac tx uncnf 5 21190" + value);
+        }
       }
     },12);
   }, 30000);
