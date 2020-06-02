@@ -96,7 +96,7 @@ Serial3.on('data', function (data) {
 					console.log("Info : waitForDownlinkMss Ok");
 					// 3324 (loudness) --> 0CFC
 					if (serialRxData.toLowerCase().indexOf("0cfc") != -1) {
-						var dataReceived = serialRxData.substr(serialRxData.length - 4); // 0cfc0305
+						var dataReceived = serialRxData.substr(serialRxData.length - 6, serialRxData.length - 2); // 0cfc0305
 						var loudness = parseInt(dataReceived) / 10;
 						console.log("loundess value received : " + loudness);
 						// si plus grand que 5 mV on allume une led sinon l'autre.
