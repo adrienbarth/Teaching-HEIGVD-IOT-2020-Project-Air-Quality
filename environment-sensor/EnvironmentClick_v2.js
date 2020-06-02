@@ -131,7 +131,7 @@ function onInit() {
 	resetRn2483();
 	setTimeout(function () {
 		console.log("========== Connecting to TTN ==========\r\n");
-		initRN2483("70B3D57ED002C231", "A752A3065ABB40EDF0056A4D5E6B879E");
+		initRN2483("70B3D57ED002C231", "A28D391EE90BD9C6CD9FD1E83483E8AC");
 	}, 1000);
 }
 
