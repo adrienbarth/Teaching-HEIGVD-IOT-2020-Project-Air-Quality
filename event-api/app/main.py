@@ -96,18 +96,17 @@ def event_handler():
     Handler for route /event.
     '''
     req_json = request.get_json()
-
+    
     try:
         # Checking payload format
         if 'data_type' not in req_json:
             raise ValueError("Missing data_type key in JSON.")
-
+        
         if 'data' not in req_json:
             raise ValueError("Missing data key in JSON.")
-
+        
         data_type = req_json['data_type']
-        data = req_json['data']
-
+        
         print("[DEBUG] Event for datatype '" + data_type + "' received.")
 
         # Checking if we are intersted with that datatype

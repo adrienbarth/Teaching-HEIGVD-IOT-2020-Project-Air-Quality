@@ -3,7 +3,7 @@ services:
   air-quality-ui:
     build: ./UI/
     ports:
-      - 8082:80
+      - 6061:80
     depends_on:
       - air-quality-db
     links:
@@ -21,7 +21,7 @@ services:
   air-quality-event-api:
     build: ./event-api/
     ports:
-      - 8081:5000
+      - 6060:5000
     depends_on:
       - air-quality-db
     links:
