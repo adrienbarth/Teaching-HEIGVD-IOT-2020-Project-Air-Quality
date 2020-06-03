@@ -1,8 +1,6 @@
 import mysql.connector
 import ttn
-import argparse
 
-from app.datatype import DataType
 from mysql.connector import Error
 from flask import request, jsonify, Flask
 
