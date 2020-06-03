@@ -53,9 +53,9 @@ INSERT INTO devices VALUES ("blovis-environment-click", "unknown", 1);
 INSERT INTO data_types VALUES (3302, "Presence", 1, 0, 1, "", "", null, "", null);
 INSERT INTO data_types VALUES (3303, "Temperature", 2, 1, 0.1, "°C", "", null, "", null);
 INSERT INTO data_types VALUES (3304, "RH", 1, 0, 0.5, "%", "", null, "", null);
-INSERT INTO data_types VALUES (3315, "Pressure", 2, 0, 0.1, "hPa", "127.0.0.1", 5000, "/event", "blovis-environment-click");
+INSERT INTO data_types VALUES (3315, "Pressure", 2, 0, 0.1, "hPa", "air-quality-event-api", 5000, "/event", "blovis-environment-click");
 INSERT INTO data_types VALUES (3324, "Loudness", 2, 0, 0.1, "mV", "", null, "", "environment-2");
-INSERT INTO data_types VALUES (3325, "Concentration", 2, 0, 1, "ppm", "127.0.0.1", "5000", "/event", "blovis-environment-click");
+INSERT INTO data_types VALUES (3325, "Concentration", 2, 0, 1, "ppm", "air-quality-event-api", 5000, "/event", "blovis-environment-click");
 INSERT INTO data_types VALUES (3336, "Location", 6, 1, 0.0001, "°", "", null, "", "airquality");
 INSERT INTO data_types VALUES (3341, "RFID tag ID", 4, 0, 1, "", "", null, "", null);
 

@@ -19,6 +19,12 @@ parser.add_argument("--user",     help="Database username")
 parser.add_argument("--password", help="Datapase user password")
 args, _ = parser.parse_args()
 '''
+
+db_host = "air-quality-db"
+db_schema = "iot2020"
+db_user = "root"
+db_password = "T2sF8fxIK7ctLS0kR1gT"
+
 datatypes = {}
 
 @app.route('/event', methods=['POST'])
@@ -63,4 +69,4 @@ def send_downlink(device_id, msg):
     mqtt_client.close()
     print("[DEBUG] Downlink has been sent to device '" + device_id + "'")
 
-datatypes = DataType.get_all("127.0.0.1", "iot2020", "root", "T2sF8fxIK7ctLS0kR1gT")
+datatypes = DataType.get_all(db_host, db_schema, db_user, db_password)

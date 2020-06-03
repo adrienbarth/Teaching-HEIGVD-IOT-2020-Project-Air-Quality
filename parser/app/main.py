@@ -15,12 +15,17 @@ app_id = "groupe-adrien"
 access_key = "ttn-account-v2.yxmXtnn1KRl6VrkLoHSEF0_6kBsjBBLsP8QopR-q6Vo"
 
 # Argument parsing
-parser = argparse.ArgumentParser(description='Teaching-HEIGVD-IOT-2020-Project-Air-Quality@PARSER')
-parser.add_argument("--host",     help="Database host")
-parser.add_argument("--schema",   help="Database schema")
-parser.add_argument("--user",     help="Database username")
-parser.add_argument("--password", help="Datapase user password")
-args = parser.parse_args()
+#parser = argparse.ArgumentParser(description='Teaching-HEIGVD-IOT-2020-Project-Air-Quality@PARSER')
+#parser.add_argument("--host",     help="Database host")
+#parser.add_argument("--schema",   help="Database schema")
+#parser.add_argument("--user",     help="Database username")
+#parser.add_argument("--password", help="Datapase user password")
+#args = parser.parse_args()
+
+db_host = "air-quality-db"
+db_schema = "iot2020"
+db_user = "root"
+db_password = "T2sF8fxIK7ctLS0kR1gT"
 
 datatypes = {}
 
@@ -78,7 +83,7 @@ def write_value_to_db(datatype, dev_id, value):
     Write value to the database.
     '''
     try:
-        connection = mysql.connector.connect(host=args.host, database=args.schema, user=args.user, password=args.password)
+        connection = mysql.connector.connect(host=db_host, database=db_schema, user=db_user, password=db_password)
         cursor = connection.cursor()
         query = "INSERT INTO sensor_values(date, value, fk_device_id, fk_data_type_xml_id) VALUES (NOW(), %s, %s, %s)"
         recordTuple = (value, dev_id, datatype.xml_id)
@@ -113,7 +118,7 @@ def uplink_callback(msg, client):
 print("**** Teaching-HEIGVD-IOT-2020-Project-Air-Quality@PARSER ****")
 
 # Fetching data types
-datatypes = DataType.get_all(args.host, args.schema, args.user, args.password)
+datatypes = DataType.get_all(db_host, db_schema, db_user, db_password)
 for dt in datatypes.values():
     print("[DEBUG] Datatype found: " + str(dt))
 print(" [INFO] Datatypes successfully fetched from the database.")
