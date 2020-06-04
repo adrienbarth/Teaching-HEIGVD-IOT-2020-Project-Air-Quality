@@ -10,9 +10,9 @@ class Sensor
         $this->PDO = new Database();
     }
 
-    public function getSensors($deviceEUI) {
+    public function getSensors($device_id) {
         return $this->PDO->select(
-            "SELECT * FROM sensors WHERE fk_device_EUI = :EUI",
+            "SELECT * FROM data_types WHERE fk_device_EUI = :EUI",
             array(
                 array('EUI', $deviceEUI, PDO::PARAM_STR)
             )

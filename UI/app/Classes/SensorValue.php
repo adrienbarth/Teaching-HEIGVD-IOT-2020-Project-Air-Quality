@@ -12,7 +12,7 @@ class SensorValue
 
     public function getSensorValues($sensorID) {
         return $this->PDO->select(
-            "SELECT * FROM sensorValues WHERE fk_sensor_id = :id",
+            "SELECT * FROM sensor_values WHERE fk_data_type_xml_id = :id",
             array(
                 array('id', $sensorID, PDO::PARAM_INT)
             )
@@ -20,9 +20,9 @@ class SensorValue
     }
 
     public function getAllSensorValues() {
-        $query = "SELECT * FROM sensorValues
-                    INNER JOIN sensors s on sensorValues.fk_sensor_id = s.id
-                    INNER JOIN devices d on s.fk_device_EUI = d.EUI
+        $query = "SELECT * FROM sensor_values
+                    INNER JOIN data_types dt on sensor_values.fk_data_type_xml_id = s.ID
+                    INNER JOIN devices d on s.fk_device_id = d.device_id
                     ORDER BY date DESC";
 
         return $this->PDO->select($query);

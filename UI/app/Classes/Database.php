@@ -6,7 +6,7 @@ class Database
 {
     private $host       = "air-quality-db";
     private $user       = "root";
-    private $password   = "d04kdzepq33kadf3qp314rm3o";
+    private $password   = "T2sF8fxIK7ctLS0kR1gT";
     private $db         = "iot2020";
     private $PDO;
 

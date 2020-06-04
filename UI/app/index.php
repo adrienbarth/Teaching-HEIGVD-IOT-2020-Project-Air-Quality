@@ -4,7 +4,6 @@ require_once "./Classes/Sensor.php";
 require_once "./Classes/SensorValue.php";
 
 $DeviceDAO = new Device();
-$SensorDAO = new Sensor();
 $SensorValueDAO = new SensorValue();
 
 $devices = $DeviceDAO->getDevices();
@@ -35,11 +34,10 @@ $sensorValues = $SensorValueDAO->getAllSensorValues();
             <table class="table table-bordered table-sm table-hover">
                 <thead>
                     <tr>
-                    <th scope="col">EUI</th>
-                    <th scope="col">Location</th>
-                    <th scope="col">Device name</th>
+                    <th scope="col">Device EUI</th>
+                    <th scope="col">Device ID</th>
                     <th scope="col">Date</th>
-                    <th scope="col">Sensor</th>
+                    <th scope="col">Data type</th>
                     <th scope="col">Value</th>
                     <th scope="col">Unit</th>
                     </tr>
@@ -48,12 +46,11 @@ $sensorValues = $SensorValueDAO->getAllSensorValues();
                     <?php
                         foreach ($sensorValues as $sensorValue) {
                             echo '<tr>';
-                            echo '<td>'.$sensorValue->EUI.'</td>';
-                            echo '<td>'.$sensorValue->location.'</td>';
-                            echo '<td>'.$sensorValue->name.'</td>';
+                            echo '<td>'.$sensorValue->device_eui.'</td>';
+                            echo '<td>'.$sensorValue->device_id.'</td>';
                             echo '<td>'.$sensorValue->date.'</td>';
-                            echo '<td>'.$sensorValue->sensorName.'</td>';
-                            echo '<td>'.$sensorValue->payload.'</td>';
+                            echo '<td>'.$sensorValue->name.'</td>';
+                            echo '<td>'.$sensorValue->value.'</td>';
                             echo '<td>'.$sensorValue->unit.'</td>';
                             echo '</tr>';
                         }
