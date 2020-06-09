@@ -117,17 +117,15 @@ def event_handler():
                         if 'longitude' in x:
                             longitude = x['longitude']
 
-                    lat = int(float(convert_coord_str(latitude)) / dt.data_resolution_per_bit)
-                    lon = int(float(convert_coord_str(longitude)) / dt.data_resolution_per_bit)
-                    payload = str(format(dt.xml_id, '04x')) + str(format(lat, '06x')) + str(format(lon, '06x'))
-                    print(payload)
+                    lat = int(float(convert_coord_str(latitude, latitude[-1:])) / dt.data_resolution_per_bit)
+                    lon = int(float(convert_coord_str(longitude, longitude[-1:])) / dt.data_resolution_per_bit)
+                    payload = str(format(dt.xml_id, '04x')) + str(hex2(lat)) + str(hex2(lon))
 
                 if dt.xml_id == 3324 and 'voltage' in data[0]:
                     voltage = int(float(data[0]["voltage"]) / dt.data_resolution_per_bit)
                     payload = str(format(dt.xml_id, '04x')) + str(format(voltage, '04x'))
 
                 if payload:
-                    print(payload)
                     send_downlink(dt.downlink_device_id, payload)
         
     except ValueError as error:
@@ -136,9 +134,14 @@ def event_handler():
 
     return "Event received."
 
-def convert_coord_str(coord):
+def hex2(n):
+    return "%s"%("000000%x"%(n&0xffffff))[-6:]
+
+def convert_coord_str(coord, dir):
     dms = re.findall(r"[-+]?\d*\.\d+|\d+", coord)
     decimal = float(dms[0]) + float(float(dms[1])/60.0) + float(float(dms[2])/3600.0)
+    if dir == 'W' or dir == 'S':
+        decimal = -1.0 * decimal
     return decimal
 
 def send_downlink(device_id, msg):
