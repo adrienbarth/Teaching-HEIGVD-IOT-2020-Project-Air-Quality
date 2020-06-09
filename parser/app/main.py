@@ -69,7 +69,7 @@ def notify_event_api(datatype, value):
     try:
         url = datatype.get_event_url()
         headers = {'Accept' : 'application/json', 'Content-Type' : 'application/json'}
-        json = '{ "data_type" : "' + str(datatype.name) + '", "data" : [{ "' + str(datatype.name) + '": "' + str(value) + '"}]}'
+        json = '{ "data_type" : "' + str(datatype.name) + '", "data" : [{ "' + str(datatype.name) + '": ' + str(value) + '}]}'
         requests.post(url, data=json, headers=headers)
     except HTTPError as http_err:
         print(f'[ERROR] HTTP error occurred: {http_err}')  # Python 3.6

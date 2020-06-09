@@ -1,4 +1,6 @@
 import mysql.connector
+import base64
+import re
 import ttn
 
 from mysql.connector import Error
@@ -8,16 +10,6 @@ app = Flask(__name__)
 
 app_id = "groupe-adrien"
 access_key = "ttn-account-v2.yxmXtnn1KRl6VrkLoHSEF0_6kBsjBBLsP8QopR-q6Vo"
-
-# Argument parsing
-'''
-parser = argparse.ArgumentParser(description='Teaching-HEIGVD-IOT-2020-Project-Air-Quality@PARSER')
-parser.add_argument("--host",     help="Database host")
-parser.add_argument("--schema",   help="Database schema")
-parser.add_argument("--user",     help="Database username")
-parser.add_argument("--password", help="Datapase user password")
-args, _ = parser.parse_args()
-'''
 
 db_host = "air-quality-db"
 db_schema = "iot2020"
@@ -106,19 +98,48 @@ def event_handler():
             raise ValueError("Missing data key in JSON.")
         
         data_type = req_json['data_type']
+        data = req_json['data']
         
         print("[DEBUG] Event for datatype '" + data_type + "' received.")
 
         # Checking if we are intersted with that datatype
         for dt in datatypes.values():
             if dt.name == data_type and dt.downlink_device_id:
-                send_downlink(dt.downlink_device_id, req_json)
+                payload = None
+
+                if dt.xml_id == 3336:
+                    latitude = None
+                    longitude = None
+
+                    for x in data:
+                        if 'latitude' in x:
+                            latitude = x['latitude']
+                        if 'longitude' in x:
+                            longitude = x['longitude']
+
+                    lat = int(float(convert_coord_str(latitude)) / dt.data_resolution_per_bit)
+                    lon = int(float(convert_coord_str(longitude)) / dt.data_resolution_per_bit)
+                    payload = str(format(dt.xml_id, '04x')) + str(format(lat, '06x')) + str(format(lon, '06x'))
+                    print(payload)
+
+                if dt.xml_id == 3324 and 'voltage' in data[0]:
+                    voltage = int(float(data[0]["voltage"]) / dt.data_resolution_per_bit)
+                    payload = str(format(dt.xml_id, '04x')) + str(format(voltage, '04x'))
+
+                if payload:
+                    print(payload)
+                    send_downlink(dt.downlink_device_id, payload)
         
     except ValueError as error:
         print("[WARNING] Event ignored due to unrecognized JSON format: " + str(req_json))
         return str(error)
 
     return "Event received."
+
+def convert_coord_str(coord):
+    dms = re.findall(r"[-+]?\d*\.\d+|\d+", coord)
+    decimal = float(dms[0]) + float(float(dms[1])/60.0) + float(float(dms[2])/3600.0)
+    return decimal
 
 def send_downlink(device_id, msg):
     '''
@@ -127,8 +148,8 @@ def send_downlink(device_id, msg):
     handler = ttn.HandlerClient(app_id, access_key)
     mqtt_client = handler.data()
     mqtt_client.connect()
-    mqtt_client.send(dev_id=device_id,  pay=msg, port=1, conf=True, sched="replace")
+    mqtt_client.send(dev_id=device_id,  pay=msg, port=1, conf=False, sched="replace")
     mqtt_client.close()
-    print("[DEBUG] Downlink has been sent to device '" + device_id + "'")
+    print("[DEBUG] Downlink " + str(msg) + " has been sent to device '" + device_id + "'")
 
 datatypes = DataType.get_all(db_host, db_schema, db_user, db_password)

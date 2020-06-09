@@ -21,8 +21,8 @@ class SensorValue
 
     public function getAllSensorValues() {
         $query = "SELECT * FROM sensor_values
-                    INNER JOIN data_types dt on sensor_values.fk_data_type_xml_id = s.ID
-                    INNER JOIN devices d on s.fk_device_id = d.device_id
+                    INNER JOIN data_types dt on sensor_values.fk_data_type_xml_id = dt.xml_id
+                    INNER JOIN devices d on sensor_values.fk_device_id = d.device_id
                     ORDER BY date DESC";
 
         return $this->PDO->select($query);
